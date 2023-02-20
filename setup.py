@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='dcmpy',
-    version='0.1.0',
+    version='0.1.5',
     description='A discrete choice modeling package in python',
     url='https://github.com/DataforProgress/dcmpy',
     author='Nic Fishman',
