@@ -31,16 +31,16 @@ def maxchoice(
     :return: tuple of optimizer status and [K, D] array of parameters
     :rtype: tuple(str, array)
     """
-    W = cp.Variable((choice_set_features.shape[2], respondent_features.shape[1]))
+    N, C, K = choice_set_features.shape
+    D = respondent_features.shape[1]
+    W = cp.Variable((K, D))
 
     W_respondent_features = respondent_features @ W.T
-    choice_features = choice_set_features[np.arange(choice_set_features.shape[0]), choice, :]
-    choice_logit = vectorized_dot_product(choice_features, W_respondent_features)
-
     logits = cp.vstack([
         vectorized_dot_product(choice_set_features[:, i, :], W_respondent_features)
-        for i in range(choice_set_features.shape[1])
+        for i in range(C)
     ]).T
+    choice_logit = logits[np.arange(N), choice]
     nll = cp.sum(cp.log_sum_exp(logits, axis=1) - choice_logit)
     if lambd is not None and alpha is not None:
         nll += lambd * (alpha * cp.sum(cp.abs(W)) + (1 - alpha) * cp.sum_squares(W))
@@ -48,4 +48,5 @@ def maxchoice(
     prob = cp.Problem(cp.Minimize(nll))
     prob.solve(solver=solver)
     return prob.status, W.value
+
 
