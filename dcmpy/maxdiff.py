@@ -6,7 +6,7 @@ from dcmpy.utils import vectorized_dot_product
 
 def maxchoice(
         choice_set_features, respondent_features, choice,
-        lambd=None, alpha=None, solver="SCS"
+        lambd=None, alpha=None, solver="ECOS"
 ):
     """
     Fit a maxdiff using choice features and respondent features.
