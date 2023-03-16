@@ -1,7 +1,7 @@
 import numpy as np
 import cvxpy as cp
 
-from dcmpy.utils import vectorized_dot_product
+from dcmpy.cvx.utils import vectorized_dot_product
 
 
 def maxchoice(
