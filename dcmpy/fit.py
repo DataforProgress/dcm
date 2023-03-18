@@ -2,11 +2,11 @@ import jax.numpy as np
 import jax
 
 
-def grad_update(params, grads, lr=0.05):
+def grad_update(params, grads, lr=0.25):
     return jax.tree_util.tree_map(lambda p, g: p - lr * g, params, grads)
 
 
-def fit(loss, model_fn, model_params, data, maxit=10_000, eps=1e-8, verbose=False):
+def fit(loss, model_fn, model_params, data, maxit=100_000, eps=1e-11, verbose=False):
     loss_grad = jax.jit(
         jax.grad(
             lambda model_params: loss(model_fn(model_params, *data))

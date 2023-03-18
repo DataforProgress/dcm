@@ -13,15 +13,15 @@ def util_diff(model_fn, true_model_params, model_params, data):
     return np.mean((model_fn(true_model_params, *data) - model_fn(model_params, *data))**2)
 
 
-D, K = 5, 5
+D, K = 10, 10
 n_seeds = 10
 
 results = []
 
-for N in [1000, 5000, 10000, 20000, 50000]:
+for N in [1000, 2000, 5000, 10_000]:
     for C in [4, 6, 8]:
         for seed in range(n_seeds):
-            rng = jax.random.PRNGKey(seed)
+            rng = jax.random.PRNGKey(1 + seed)
 
             model_fn, true_model_params, init_model_params, data = linear_sim(rng, N, C, D, K)
 
@@ -29,16 +29,21 @@ for N in [1000, 5000, 10000, 20000, 50000]:
             first_last_model_params = fit(first_last_loss, model_fn, init_model_params, data)
             full_model_params = fit(full_loss, model_fn, init_model_params, data)
 
-            val_data = normal_dgp(rng, model_fn, true_model_params, 100_000, C, D, K)
+            # val_data = normal_dgp(rng, model_fn, true_model_params, 100_000, C, D, K)
+            # print(np.sum((true_model_params["theta"] - first_model_params["theta"]) ** 2))
+            # print(np.sum((true_model_params["theta"] - full_model_params["theta"]) ** 2))
+            # print(true_model_params["theta"].T)
+            # print(first_model_params["theta"].T)
+            # print(full_model_params["theta"].T)
 
             results.append([
                 N, C,
                 param_diff(true_model_params, first_model_params),
                 param_diff(true_model_params, first_last_model_params),
                 param_diff(true_model_params, full_model_params),
-                util_diff(model_fn, true_model_params, first_model_params, data),
-                util_diff(model_fn, true_model_params, first_last_model_params, data),
-                util_diff(model_fn, true_model_params, full_model_params, data)
+                # util_diff(model_fn, true_model_params, first_model_params, data),
+                # util_diff(model_fn, true_model_params, first_last_model_params, data),
+                # util_diff(model_fn, true_model_params, full_model_params, data)
             ])
             print("\t".join(map(str, results[-1])))
 

@@ -8,7 +8,7 @@ def last_prob(weights, eps=1e-16):
     p = 1
     for n in range(1, N):
         for A in itertools.combinations(range(N - 1), n):
-            p -= (-1) ** n * weights[:, N - 1] / (weights[:, N - 1] + np.sum(weights[:, A], axis=-1))
+            p += (-1) ** n * weights[:, N - 1] / (weights[:, N - 1] + np.sum(weights[:, A], axis=-1))
 
     p = np.maximum(p, eps)
     return p
@@ -29,6 +29,6 @@ def full_loss(logits):
     N = logits.shape[1]
     loglik_full = 0
     for n in range(N - 1):
-        loglik_full += -logits[:, n] + sp.logsumexp(logits[:, n:], axis=-1)
+        loglik_full += sp.logsumexp(logits[:, n:], axis=-1) - logits[:, n]
     return np.mean(loglik_full)
 
