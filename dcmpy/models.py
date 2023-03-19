@@ -1,9 +1,7 @@
 import jax.numpy as np
 
 
-def init_linear(choice_set_features, respondent_features):
-    N, D = respondent_features.shape
-    _, C, K = choice_set_features.shape
+def init_linear(N, C, D, K):
     model_params = {
         "theta": np.zeros((K, D))
     }

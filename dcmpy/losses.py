@@ -11,6 +11,7 @@ def last_prob(weights, eps=1e-16):
             p += (-1) ** n * weights[:, N - 1] / (weights[:, N - 1] + np.sum(weights[:, A], axis=-1))
 
     p = np.maximum(p, eps)
+    # print(p)
     return p
 
 
@@ -32,3 +33,7 @@ def full_loss(logits):
         loglik_full += sp.logsumexp(logits[:, n:], axis=-1) - logits[:, n]
     return np.mean(loglik_full)
 
+
+def sawtooth_loss(logits):
+    loglik_sawtooth = -logits[:, 0] + logits[:, -1] + 2 * sp.logsumexp(logits, axis=-1)
+    return np.mean(loglik_sawtooth)
