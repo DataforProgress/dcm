@@ -32,6 +32,7 @@ def dgp(
 
     if choice_type == "categorical" and total_choices == K:
         all_choices = np.eye(K)
+        # all_choices = all_choices.at[0, 0].set(0)
     elif choice_type == "normal":
         rng, next_rng = jax.random.split(rng)
         all_choices = jax.random.normal(next_rng, shape=(total_choices, K)) / K

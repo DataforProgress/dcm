@@ -9,3 +9,7 @@ __author__ = 'Nic Fishman'
 __credits__ = 'University of Oxford'
 
 from dcmpy.cvx.maxdiff import maxchoice
+from dcmpy.models import *
+from dcmpy.losses import * 
+from dcmpy.fit import *
+from dcmpy.uncertainty import *
