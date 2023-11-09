@@ -4,7 +4,7 @@ import jax.numpy as np
 def linear_sim(rng, N, C, D, K):
     # parameter we're estimating
     rng, next_rng = jax.random.split(rng)
-    theta = jax.random.normal(next_rng, shape=((K - 1) * D,))
+    theta = jax.random.normal(next_rng, shape=((K - 1) * D,)) 
     true_model_params = {
         "theta": theta
     }

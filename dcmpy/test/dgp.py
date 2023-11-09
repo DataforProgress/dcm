@@ -25,19 +25,21 @@ ordered_samples = ordered_samples_exponential
 
 def dgp(
         rng, model_fn, model_params, N, C, D, K, total_choices=None,
-        respondent_intercept=True, choice_intercept=False, choice_type="discrete"
+        respondent_intercept=True, choice_intercept=False, choice_type="discrete", all_choices=None
 ):
     if total_choices is None:
         total_choices = K
 
-    if choice_type == "categorical" and total_choices == K:
-        all_choices = np.eye(K)
-        # all_choices = all_choices.at[0, 0].set(0)
-    elif choice_type == "normal":
-        rng, next_rng = jax.random.split(rng)
-        all_choices = jax.random.normal(next_rng, shape=(total_choices, K)) / K
-    else:
-        raise NotImplementedError
+    if all_choices is None:
+        if choice_type == "categorical" and total_choices == K:
+            all_choices = np.eye(K)
+            # all_choices = all_choices.at[0, 0].set(0)
+        elif choice_type == "normal":
+            rng, next_rng = jax.random.split(rng)
+            all_choices = jax.random.normal(next_rng, shape=(total_choices, K)) 
+            all_choices = all_choices / np.linalg.norm(all_choices, axis=-1)[:, None]
+        else:
+            raise NotImplementedError
 
     # simulated covariates
     rng, next_rng = jax.random.split(rng)
@@ -60,4 +62,4 @@ def dgp(
     order = ordered_samples(next_rng, logits)
     ordered_choice_set_features = choice_set_features[np.arange(N)[:, None], order]
 
-    return ordered_choice_set_features, respondent_features
+    return (ordered_choice_set_features, respondent_features), all_choices

@@ -37,7 +37,7 @@ def robust_confidence_intervals(
 
     hess_fn = jax.jit(
         jax.hessian(
-            lambda model_params: np.mean(np.mean(loss(model_fn(model_params, *data))))
+            lambda model_params: np.mean(loss(model_fn(model_params, *data)))
         )
     )
     outer_grad = np.mean(outer_grads(data), axis=0)
