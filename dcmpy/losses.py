@@ -1,11 +1,9 @@
 from typing import Any, Optional, Tuple, Union
 
-import math
 import itertools
 import jax.numpy as np
 from jax.scipy import special as sp
 
-from dcmpy.utils import comb
 
 def last_loglik(logits: np.ndarray, eps: Optional[float]=1e-16):
     """Log-likelihood of last item being chosen, assuming only the most preferred and least preferred are observed.
@@ -49,7 +47,7 @@ def approx_last_loglik(logits: np.ndarray, eps: Optional[float]=1e-5, T: Optiona
     u = np.linspace(0, 1 - eps, T)
     z = np.log1p(-u[:, None, None] ** np.exp(logits[:, :-1] - logits[:, -1][:, None])[None, :, :]).sum(axis=-1) 
     loglik = sp.logsumexp(z - np.log(T), axis=0)
-    return loglik.mean()
+    return -loglik.mean()
 
 
 def first_last_loglik(logits: np.ndarray):
@@ -62,7 +60,7 @@ def first_last_loglik(logits: np.ndarray):
         log-likelihood of choice model, shape (N,)
     """
     loglik_first = -logits[:, 0] + sp.logsumexp(logits, axis=-1)
-    loglik_last = -approx_last_loglik(logits[:, 1:])
+    loglik_last = approx_last_loglik(logits[:, 1:])
     return loglik_first + loglik_last
 
 
